@@ -1,9 +1,8 @@
-name: Aktualizacja statystyk GGE co 20 min
+name: Aktualizacja statystyk GGE co 1 min
 
 on:
   schedule:
-    # 4:00 do 21:40 UTC odpowiada godzinom 6:00 do 23:40 czasu polskiego
-    - cron: '*/20 4-21 * * *'
+    - cron: '* * * * *'
   workflow_dispatch:
 
 permissions:
@@ -35,3 +34,4 @@ jobs:
           git add data/stats.json
           git commit -m "Automatyczna aktualizacja statystyk [skip ci]" || exit 0
           git push
+          
