@@ -1,5 +1,5 @@
 {
-    "updated_at": "2026-10-01 02:46:38",
+    "updated_at": "2026-10-01 02:52:32",
     "server": "E4K Polska 1",
     "alliances": [
         {
@@ -7,7 +7,8 @@
             "tag": "RB",
             "aid": 115,
             "stats": {
-                "error": "Brak danych z API"
+                "error": "API odrzuciło żądanie. Status: 400",
+                "szczegoly": "{\"error\":\"Invalid command or headers\"}"
             }
         },
         {
@@ -15,7 +16,8 @@
             "tag": "MD",
             "aid": 41343,
             "stats": {
-                "error": "Brak danych z API"
+                "error": "API odrzuciło żądanie. Status: 400",
+                "szczegoly": "{\"error\":\"Invalid command or headers\"}"
             }
         }
     ]
