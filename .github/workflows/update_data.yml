@@ -1,0 +1,37 @@
+name: Aktualizacja statystyk GGE co 20 min
+
+on:
+  schedule:
+    # 4:00 do 21:40 UTC odpowiada godzinom 6:00 do 23:40 czasu polskiego
+    - cron: '*/20 4-21 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pobierz kod repozytorium
+        uses: actions/checkout@v4
+
+      - name: Konfiguracja Pythona
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalacja zależności
+        run: |
+          pip install requests pytz
+
+      - name: Uruchomienie skryptu pobierającego
+        run: python script/fetch_gge.py
+
+      - name: Commit i push zmian na GitHub Pages
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git add data/stats.json
+          git commit -m "Automatyczna aktualizacja statystyk [skip ci]" || exit 0
+          git push
