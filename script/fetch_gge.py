@@ -7,27 +7,26 @@ import urllib.parse
 
 def fetch_data(url):
     try:
-        # Dodajemy więcej nagłówków, aby udawać normalny ruch z przeglądarki
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
-            'Accept': 'application/json, text/plain, */*'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'application/json'
         }
-        response = requests.get(url, headers=headers, timeout=15)
-        print(f"URL: {url}")
-        print(f"Status z API: {response.status_code}")
+        # Wydłużony timeout do 20 sekund na tzw. "cold start" serwera
+        response = requests.get(url, headers=headers, timeout=20)
         
         if response.status_code == 200:
             return response.json()
         else:
-            print(f"Błąd odpowiedzi: {response.text}")
+            # Przekazuje kod błędu (np. 403) prosto na stronę
+            return {
+                "error": f"API odrzuciło żądanie. Status: {response.status_code}",
+                "szczegoly": response.text[:100]
+            }
     except Exception as e:
-        print(f"Błąd sieciowy: {e}")
-    return None
+        # Przekazuje błąd techniczny (np. Timeout) prosto na stronę
+        return {"error": f"Błąd skryptu/sieci: {str(e)}"}
 
 if __name__ == "__main__":
-    print("Rozpoczęcie pobierania danych ze ścieżek...")
-
-    # Zmuszamy Pythona do poprawnego zakodowania znaków specjalnych, aby uniknąć błędów URL
     payload_reborn = '{"A10":115}'
     payload_maddevils = '{"A10":41343}'
     
@@ -45,13 +44,13 @@ if __name__ == "__main__":
             "name": "- ReBorN -",
             "tag": "RB",
             "aid": 115,
-            "stats": data_reborn if data_reborn else {"error": "Brak danych z API"}
+            "stats": data_reborn
         },
         {
             "name": "MADDEVILS",
             "tag": "MD",
             "aid": 41343,
-            "stats": data_maddevils if data_maddevils else {"error": "Brak danych z API"}
+            "stats": data_maddevils
         }
     ]
 
@@ -64,6 +63,4 @@ if __name__ == "__main__":
 
     with open("data/stats.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=4)
-
-    print("Skrypt zakończył działanie. Plik stats.json został zapisany.")
-    
+        
