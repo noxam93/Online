@@ -3,23 +3,39 @@ import json
 import os
 import pytz
 import requests
+import urllib.parse
 
 def fetch_data(url):
     try:
-        headers = {'User-Agent': 'Mozilla/5.0'}
+        # Dodajemy więcej nagłówków, aby udawać normalny ruch z przeglądarki
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+            'Accept': 'application/json, text/plain, */*'
+        }
         response = requests.get(url, headers=headers, timeout=15)
-        print(f"Zapytanie do API, status: {response.status_code}")
+        print(f"URL: {url}")
+        print(f"Status z API: {response.status_code}")
+        
         if response.status_code == 200:
             return response.json()
+        else:
+            print(f"Błąd odpowiedzi: {response.text}")
     except Exception as e:
         print(f"Błąd sieciowy: {e}")
     return None
 
 if __name__ == "__main__":
-    print("Pobieranie danych ze ścieżek z aplikacji...")
+    print("Rozpoczęcie pobierania danych ze ścieżek...")
 
-    url_reborn = "https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/%7B%22A10%22%3A115%7D"
-    url_maddevils = "https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/%7B%22A10%22%3A41343%7D"
+    # Zmuszamy Pythona do poprawnego zakodowania znaków specjalnych, aby uniknąć błędów URL
+    payload_reborn = '{"A10":115}'
+    payload_maddevils = '{"A10":41343}'
+    
+    encoded_reborn = urllib.parse.quote(payload_reborn)
+    encoded_maddevils = urllib.parse.quote(payload_maddevils)
+
+    url_reborn = f"https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/{encoded_reborn}"
+    url_maddevils = f"https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/{encoded_maddevils}"
 
     data_reborn = fetch_data(url_reborn)
     data_maddevils = fetch_data(url_maddevils)
@@ -49,5 +65,5 @@ if __name__ == "__main__":
     with open("data/stats.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=4)
 
-    print("Zaktualizowano plik stats.json!")
+    print("Skrypt zakończył działanie. Plik stats.json został zapisany.")
     
