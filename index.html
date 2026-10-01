@@ -6,12 +6,12 @@
     <style>
         body { font-family: Arial, sans-serif; background: #121212; color: #fff; padding: 20px; }
         .alliance-card { background: #1f1f1f; border: 1px solid #333; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
-        h2 { color: #f39c12; }
+        h2 { color: #f39c12; margin-top: 0; }
         pre { background: #000; padding: 10px; border-radius: 4px; overflow-x: auto; color: #00ff00; }
     </style>
 </head>
 <body>
-    <h1>Tracker Sojuszy (E4K Polska 1)[span_7](start_span)[span_7](end_span)</h1>
+    <h1>Tracker Sojuszy (E4K Polska 1)</h1>
     <div id="update-time" style="color: #888; margin-bottom: 20px;">Ładowanie danych...</div>
     
     <div id="alliances-container">
@@ -19,10 +19,19 @@
     </div>
 
     <script>
-        fetch('data/stats.json')
-            .then(response => response.json())
+        // Zapobiegamy cache'owaniu pliku dodając timestamp
+        const cacheBuster = new Date().getTime();
+        
+        fetch(`data/stats.json?t=${cacheBuster}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Brak pliku JSON lub błąd serwera');
+                }
+                return response.json();
+            })
             .then(data => {
-                document.getElementById('update-time'].innerText = "Ostatnia aktualizacja: " + data.updated_at;
+                // Błąd nawiasu został tutaj naprawiony
+                document.getElementById('update-time').innerText = "Ostatnia aktualizacja: " + (data.updated_at || "Brak danych");
                 const container = document.getElementById('alliances-container');
                 container.innerHTML = '';
                 
@@ -38,7 +47,7 @@
             })
             .catch(error => {
                 console.error('Błąd ładowania danych:', error);
-                document.getElementById('update-time').innerText = "Błąd podczas ładowania danych.";
+                document.getElementById('update-time').innerText = "Błąd pobierania danych. Sprawdź, czy akcja na GitHubie wygenerowała plik stats.json.";
             });
     </script>
 </body>
