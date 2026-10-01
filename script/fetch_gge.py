@@ -4,17 +4,8 @@ import os
 import pytz
 import requests
 
-def check_time_window():
-    pl_tz = pytz.timezone("Europe/Warsaw")
-    now = datetime.now(pl_tz)
-    current_time = now.time()
-    start_time = datetime.strptime("06:00", "%H:%M").time()
-    end_time = datetime.strptime("23:40", "%H:%M").time()
-    return start_time <= current_time <= end_time
-
 def fetch_data(url):
     try:
-        # Dodajemy nagłówek przeglądarki, żeby zapytanie nie zostało zablokowane
         headers = {'User-Agent': 'Mozilla/5.0'}
         response = requests.get(url, headers=headers, timeout=15)
         print(f"Zapytanie do API, status: {response.status_code}")
@@ -25,13 +16,8 @@ def fetch_data(url):
     return None
 
 if __name__ == "__main__":
-    if not check_time_window():
-        print("Poza wyznaczonym oknem czasowym (6:00 - 23:40). Pomijam pobieranie.")
-        exit(0)
-
     print("Pobieranie danych ze ścieżek z aplikacji...")
 
-    # Dokładne linki z Twojego zrzutu ekranu[span_3](start_span)[span_3](end_span)
     url_reborn = "https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/%7B%22A10%22%3A115%7D"
     url_maddevils = "https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/%7B%22A10%22%3A41343%7D"
 
