@@ -3,38 +3,33 @@ import json
 import os
 import pytz
 import requests
-import urllib.parse
 
 def fetch_data(url):
     try:
+        # Udajemy narzędzie cURL, ponieważ wiemy z Twoich notatek, że cURL działa
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Accept': 'application/json'
+            'User-Agent': 'curl/7.81.0',
+            'Accept': '*/*'
         }
-        # Wydłużony timeout do 20 sekund na tzw. "cold start" serwera
+        
+        # Timeout ustawiony na 20s w razie wybudzania serwera fly.dev
         response = requests.get(url, headers=headers, timeout=20)
         
         if response.status_code == 200:
             return response.json()
         else:
-            # Przekazuje kod błędu (np. 403) prosto na stronę
             return {
                 "error": f"API odrzuciło żądanie. Status: {response.status_code}",
                 "szczegoly": response.text[:100]
             }
     except Exception as e:
-        # Przekazuje błąd techniczny (np. Timeout) prosto na stronę
         return {"error": f"Błąd skryptu/sieci: {str(e)}"}
 
 if __name__ == "__main__":
-    payload_reborn = '{"A10":115}'
-    payload_maddevils = '{"A10":41343}'
-    
-    encoded_reborn = urllib.parse.quote(payload_reborn)
-    encoded_maddevils = urllib.parse.quote(payload_maddevils)
-
-    url_reborn = f"https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/{encoded_reborn}"
-    url_maddevils = f"https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/{encoded_maddevils}"
+    # Pozwalamy bibliotece requests zakodować nawiasy klamrowe {} samodzielnie.
+    # Unikamy dzięki temu błędu Invalid command or headers wywołanego podwójnym kodowaniem.
+    url_reborn = 'https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/{"A10":115}'
+    url_maddevils = 'https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/{"A10":41343}'
 
     data_reborn = fetch_data(url_reborn)
     data_maddevils = fetch_data(url_maddevils)
