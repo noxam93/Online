@@ -6,30 +6,26 @@ import requests
 
 def fetch_data(url):
     try:
-        # Udajemy narzędzie cURL, ponieważ wiemy z Twoich notatek, że cURL działa
         headers = {
-            'User-Agent': 'curl/7.81.0',
-            'Accept': '*/*'
+            'User-Agent': 'Mozilla/5.0',
+            'Accept': 'application/json'
         }
-        
-        # Timeout ustawiony na 20s w razie wybudzania serwera fly.dev
         response = requests.get(url, headers=headers, timeout=20)
         
         if response.status_code == 200:
             return response.json()
         else:
             return {
-                "error": f"API odrzuciło żądanie. Status: {response.status_code}",
+                "error": f"Odrzucono. Status: {response.status_code}",
                 "szczegoly": response.text[:100]
             }
     except Exception as e:
-        return {"error": f"Błąd skryptu/sieci: {str(e)}"}
+        return {"error": f"Błąd: {str(e)}"}
 
 if __name__ == "__main__":
-    # Pozwalamy bibliotece requests zakodować nawiasy klamrowe {} samodzielnie.
-    # Unikamy dzięki temu błędu Invalid command or headers wywołanego podwójnym kodowaniem.
-    url_reborn = 'https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/{"A10":115}'
-    url_maddevils = 'https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/{"A10":41343}'
+    # Linki bazujące na poprawnej składni z notatek: JSON bez { }
+    url_reborn = "https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/%22A10%22%3A115"
+    url_maddevils = "https://empire-api.fly.dev/EmpirefourkingdomsExGG2_3/ain/%22A10%22%3A41343"
 
     data_reborn = fetch_data(url_reborn)
     data_maddevils = fetch_data(url_maddevils)
