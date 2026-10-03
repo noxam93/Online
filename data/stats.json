@@ -1,5 +1,5 @@
 {
-    "updated_at": "2026-10-03 09:59:26",
+    "updated_at": "2026-10-03 10:22:23",
     "server": "E4K Polska 1",
     "alliances": [
         {
@@ -7,8 +7,8 @@
             "tag": "RB",
             "aid": 115,
             "stats": {
-                "error": "Odrzucono. Status: 400",
-                "szczegoly": "{\"error\":\"Invalid command or headers\"}"
+                "error": "Odrzucono. Status: 500",
+                "szczegoly": "{\"error\":\"Server not connected\"}"
             }
         },
         {
@@ -16,8 +16,8 @@
             "tag": "MD",
             "aid": 41343,
             "stats": {
-                "error": "Odrzucono. Status: 400",
-                "szczegoly": "{\"error\":\"Invalid command or headers\"}"
+                "error": "Odrzucono. Status: 500",
+                "szczegoly": "{\"error\":\"Server not connected\"}"
             }
         }
     ]
